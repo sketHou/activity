@@ -13,3 +13,6 @@ function getShareInfo(){
     };
     return share;
 }
+
+var url = './images/img.jpg';
+console.log(url);

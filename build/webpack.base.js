@@ -6,8 +6,6 @@ var SassPlugin = require('sass-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var getEntryJs = require('./util').getEntryJs;
 var getEntryHtml = require('./util').getEntryHtml;
-const compileDirName = process.argv[3];
-console.log(getEntryJs());
 
 var webpackConfig = {
     entry: getEntryJs(),
@@ -71,17 +69,19 @@ var webpackConfig = {
         ]
     },
     plugins: [
+        // new webpack.BannerPlugin('what????????'),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
             filename: 'js/vendor.bundle.js?v=[chunkhash]',
         }),
         new ExtractTextPlugin('css/[name].css?v=[chunkhash]'),
     ],
-    devtool: 'inline-source-map',
     devServer: {
-        port: 9000,
+        // contentBase: "./public", //本地服务器所加载的页面所在的目录
+        host: 'localhost',
+        port: 8188, //端口
+        inline: true,
         hot: false,
-        contentBase: './' + compileDirName
     }
 };
 

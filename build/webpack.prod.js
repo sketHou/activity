@@ -1,35 +1,25 @@
 var path = require('path');
+var config = require('./config');
 var webpack = require('webpack');
-var rootDir = path.resolve(__dirname, '../'); 
-var nodeModules = path.resolve(rootDir, '/node_modules/'); 
 var htmlWebpackPlugin = require('html-webpack-plugin');
 var SassPlugin = require('sass-webpack-plugin');
-var ExtractTextWebpackPlugin = require("extract-text-webpack-plugin");
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var getEntryJs = require('./util').getEntryJs;
+var getEntryHtml = require('./util').getEntryHtml;
 
-var compileDirName = process.argv[3];
-var rootDir = path.resolve(__dirname, '../'); 
-var srcDir = path.resolve(__dirname, '../src'); 
-var distDir = path.resolve(rootDir, 'dist');
-var compilePath = path.resolve(srcDir, compileDirName);
-var entryJs = path.resolve(compilePath, 'js/m_index.js');
+console.log(getEntryJs());
 
-var extractCss = new ExtractTextWebpackPlugin('./css/[name].css');
-
-
-module.exports = {
-    entry: {
-        app: entryJs,
-        vendor: ['jquery']
-    },
+var webpackConfig = {
+    entry: getEntryJs(),
     output: {
-        path: path.resolve(distDir, compileDirName, 'js'),
-        filename: 'bundle.js?v=[chunkhash]'        
+        path: config.targetpath,
+        filename: 'js/[name].bundle.js?v=[chunkhash]'
     },
     module: {
         rules: [
             {
                 test: /\.js$/,
-                exclude: nodeModules,
+                exclude: config.nodeModulesPath,
                 use: {
                     loader: 'babel-loader',
                     options: {
@@ -45,27 +35,59 @@ module.exports = {
             {
                 test: /\.scss$/,
                 exclude: /node_modules/,
-                loader: extractCss.extract(['style-loader', 'postcss-loader', 'css-loader', 'sass-loader'])
+                // loader: extractCss.extract(['style-loader', 'postcss-loader', 'css-loader', 'sass-loader'])
+                use: ExtractTextPlugin.extract({
+                    fallback: 'style-loader',
+                    //resolve-url-loader may be chained before sass-loader if necessary
+                    use: ['css-loader', 'autoprefixer-loader', 'sprite-loader', 'sass-loader'],
+                    publicPath: '../'
+                })
+            },
+            {
+                test: /\.(png|jpg|gif)$/,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            limit: 8192,
+                            name: '[name].[ext]?v=[hash]',
+                            outputPath: './images/'
+                        }
+                    }
+                ]
+            },
+            {
+                test: /\.(html)$/,
+                use: [
+                    {
+                        loader: 'html-loader',
+                        options: {
+                            minimize: true,
+                            removeComments: true
+                        }
+                    }
+                ]
             }
         ]
     },
     plugins: [
+        // new webpack.BannerPlugin('what????????'),
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
-            filename: 'vendor.bundle.js?v=[chunkhash]',
-            
+            filename: 'js/vendor.bundle.js?v=[chunkhash]',
         }),
-        extractCss,
-        // new SassPlugin('../style/css.scss', {
-        //     // sourceMap: true,
-        //     sass: { outputStyle: 'compressed' },
-        //     // autoprefixer: true
-        // }),
-        new htmlWebpackPlugin({
-            filename: '../m_index.html',
-            template: path.resolve(compilePath, 'm_index.html'),
-            removeComments: true,
-            collapseWhitespace: true
-        })
+        new ExtractTextPlugin('css/[name].css?v=[chunkhash]'),
     ]
 };
+
+var pages = getEntryHtml();
+pages.forEach(function (data) {
+    webpackConfig.plugins.push(new htmlWebpackPlugin({
+        filename: data.name,
+        template: path.resolve(config.compilePath, data.name),
+        removeComments: true,
+        collapseWhitespace: true
+    }));
+});
+
+module.exports = webpackConfig;

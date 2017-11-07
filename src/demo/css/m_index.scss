@@ -4,4 +4,16 @@ body {
     h1 {
         color: rgb(165, 229, 248);
     }
+    .img1 {
+        width: 200px;
+        height: 200px;
+        background: url('../images/img.jpg');
+        background-size: 100% 100%;
+    }
+    .img2 {
+        width: 200px;
+        height: 200px;
+        background: url('../images/img2.jpg');
+        background-size: 100% 100%;
+    }
 }

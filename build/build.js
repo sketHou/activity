@@ -12,7 +12,7 @@ var compileDirName = process.argv[3];
 var compilePath = path.resolve(srcDir, compileDirName);
 var entryJs = path.resolve(compilePath, 'js/m_index.js');
 var targetDir = path.resolve(distDir, compileDirName);
-
+console.log(targetDir);
 rm(targetDir, err => {
     webpack(webpackConf, function(err, stats) {
         if (err) throw err;
