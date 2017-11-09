@@ -1,10 +1,19 @@
 const Webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
-const webpackConfig = require('./webpack.dev');
+const webpackBaseConfig = require('./webpack.base');
+const webpackDevConfig = require('./webpack.dev');
+const merge = require('webpack-merge');
 const compileDirName = process.argv[3];
 
+var webpackConfig = merge(webpackBaseConfig, webpackDevConfig);
+
 Object.keys(webpackConfig.entry).forEach(element => {
-	webpackConfig.entry[element].unshift("webpack-dev-server/client?http://127.0.0.1:8080/", "webpack/hot/dev-server");
+	var entry = webpackConfig.entry[element];
+	webpackConfig.entry[element] = [
+		entry,
+		'webpack-dev-server/client?http://127.0.0.1:8080/',
+		'webpack/hot/dev-server'
+	];
 });
 
 const compiler = Webpack(webpackConfig);

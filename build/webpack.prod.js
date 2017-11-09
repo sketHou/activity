@@ -4,8 +4,6 @@ var webpack = require('webpack');
 var htmlWebpackPlugin = require('html-webpack-plugin');
 var SassPlugin = require('sass-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var getEntryJs = require('./util').getEntryJs;
-var getEntryHtml = require('./util').getEntryHtml;
 
 var webpackConfig = {
     entry: getEntryJs(),

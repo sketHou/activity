@@ -33,9 +33,7 @@ var getEntryJs = function () {
     var result = {};
     htmlList.forEach(function (data) {
         var name = path.basename(data, '.html');
-        result[name] = [
-            path.resolve(compilePath, 'js/' + name + '.js')
-        ];
+        result[name] = path.resolve(compilePath, 'js/' + name + '.js');
     });
     return result;
 }
