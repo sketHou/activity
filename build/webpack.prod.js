@@ -7,8 +7,6 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var getEntryJs = require('./util').getEntryJs;
 var getEntryHtml = require('./util').getEntryHtml;
 
-console.log(getEntryJs());
-
 var webpackConfig = {
     entry: getEntryJs(),
     output: {
@@ -72,22 +70,24 @@ var webpackConfig = {
     },
     plugins: [
         // new webpack.BannerPlugin('what????????'),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            filename: 'js/vendor.bundle.js?v=[chunkhash]',
-        }),
+        // new webpack.optimize.CommonsChunkPlugin({
+        //     name: 'vendor',
+        //     filename: 'js/vendor.bundle.js?v=[chunkhash]',
+        // }),
         new ExtractTextPlugin('css/[name].css?v=[chunkhash]'),
     ]
 };
 
 var pages = getEntryHtml();
 pages.forEach(function (data) {
-    webpackConfig.plugins.push(new htmlWebpackPlugin({
-        filename: data.name,
-        template: path.resolve(config.compilePath, data.name),
+    var plugin = new htmlWebpackPlugin({
+        filename: data.name + '.html',
+        template: path.resolve(config.compilePath, data.fileName),
         removeComments: true,
-        collapseWhitespace: true
-    }));
+        collapseWhitespace: true,
+        chunks: [data.name]
+    });
+    webpackConfig.plugins.push(plugin);
 });
 
 module.exports = webpackConfig;

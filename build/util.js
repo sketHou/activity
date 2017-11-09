@@ -33,8 +33,9 @@ var getEntryJs = function () {
     var result = {};
     htmlList.forEach(function (data) {
         var name = path.basename(data, '.html');
-        console.log(compilePath);
-        result[name] = path.resolve(compilePath, 'js/' + name + '.js');
+        result[name] = [
+            path.resolve(compilePath, 'js/' + name + '.js')
+        ];
     });
     return result;
 }
@@ -43,9 +44,10 @@ var getEntryHtml = function () {
     var list = getHtmls(compilePath);
     var result = [];
     list.forEach(function (data) {
-        var name = path.basename(data);
+        var name = path.basename(data, '.html');
         result.push({
-            path: './' + name,
+            path: './' + name + '.html',
+            fileName: name + '.html',
             name: name
         });
     });

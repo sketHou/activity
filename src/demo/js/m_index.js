@@ -1,3 +1,4 @@
+import $ from 'jquery'
 import share from '../../common/js/share';
 import shareData from '../js/m_index_share';
 
