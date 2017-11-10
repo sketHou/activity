@@ -10,7 +10,7 @@ var webpackConfig = {
     entry: getEntryJs(),
     output: {
         path: config.targetpath,
-        filename: 'js/[name].bundle.js'
+        filename: 'js/[name].bundle.js?v=[chunkhash]'
     },
     module: {
         rules: [

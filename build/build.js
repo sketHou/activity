@@ -16,7 +16,7 @@ var entryJs = path.resolve(compilePath, 'js/m_index.js');
 var targetDir = path.resolve(distDir, compileDirName);
 
 
-var webpackConf = webpackProdConfig
+var webpackConf = merge(webpackProdConfig, webpackBaseConfig);
 // console.log(webpackConf.plugins);
 
 rm(targetDir, err => {
